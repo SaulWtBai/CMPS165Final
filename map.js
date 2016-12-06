@@ -1,122 +1,117 @@
-d3.select("body").append("div").attr("id", "middle");
 
 //--button--
-d3.select("#middle").append("div").attr("id", "buttonBar").style("float","left");
-d3.select("#buttonBar").append("button").attr("id", "hasCity").text("HasCity");
-d3.select("#buttonBar").append("button").attr("id", "noCity").text("NoCity");
+d3.select("body").append("div").attr("id", "buttonBar");
 
-d3.select("#buttonBar").append("div").attr("id","totalGDP_div").text("Total GDP");
-d3.select("#totalGDP_div").append("button").attr("id", "totalGDP_famousCities");
-d3.select("#totalGDP_div").append("button").attr("id", "totalGDP_province");
+d3.select("#buttonBar").append("div").attr("id","cityOrProvince");
+d3.select("#cityOrProvince").append("button").attr("id", "noCity").text("Provinces");
+d3.select("#cityOrProvince").append("button").attr("id", "hasCity").text("Cities");
 
-d3.select("#buttonBar").append("div").attr("id","population_div").text("Population");
-d3.select("#population_div").append("button").attr("id", "population_famousCities");
-d3.select("#population_div").append("button").attr("id", "population_province");
-
-d3.select("#buttonBar").append("div").attr("id","PGDP_div").text("GDP Per Capita");
-d3.select("#PGDP_div").append("button").attr("id", "PGDP_famousCities");
-d3.select("#PGDP_div").append("button").attr("id", "PGDP_province");
-
-document.getElementById("totalGDP_famousCities").innerHTML = "Ten famous cities";
-document.getElementById("population_famousCities").innerHTML = "Ten famous cities";
-document.getElementById("PGDP_famousCities").innerHTML = "Ten famous cities";
-document.getElementById("totalGDP_province").innerHTML = "Province and  municipality";
-document.getElementById("population_province").innerHTML = "Province and municipality";
-document.getElementById("PGDP_province").innerHTML = "Province and municipality";
+d3.select("#buttonBar").append("div").attr("id","PGG");
+d3.select("#PGG").append("button").attr("id", "Populaion_Button").text("Population");
+d3.select("#PGG").append("button").attr("id", "GDP_Button").text("GDP");
+d3.select("#PGG").append("button").attr("id", "PGDP_Button").text("GDP Per Capita");
 
 
-
-
-var IsCity = true;//是否是city状态
-var IsGDP = false;//是否是gdp状态
-var mod = {IsCity:true, IsGDP:false, IsPOP:true, IsPGDP:false};
+//var IsCity = true;//是否是city状态
+//var IsGDP = false;//是否是gdp状态
+var mod = {IsProvince:true, IsCity:false, IsGDP:false, IsPOP:true, IsPGDP:false, IsRest: true};
 
 var width  = 1000;
-var height = 700;
-var svg = d3.select("#middle").append("div").attr("id", "divsvg").attr("class","divsvg")
-    .append("svg").attr("id","svg").attr("class","svg")
-    .attr("width", width+20)
-    .attr("height", height-50);
+var height = 600;
+var svg = d3.select("body").append("svg").attr("id","svg").attr("class","svg")
+    .attr("width", width)
+    .attr("height", height);
 
 var g = svg.append("g").attr("id", "map");
 
+var originalRectangleProporty = {ry:0, ry_increase:50, rx:0, width:20, heigh:20,
+                        ny:15, ny_increase:50, nx:30, font_size:"20px", 
+                        population_interval:2500, gdp_interval:16000, pgdp_interval:20000,
+                        population_city_interval:300, gdp_city_interval:2200,
+                        intialPop : 0, intialgdp : 0, intialpgdp : 20000
+                        };
 
 
-
-
-//define the value of center of projection
-var center_y=31, center_x=107;
 //set projection
 var projection = d3.geo.mercator()
-//    .center([107, 31])
     .center([100, 35])
     .scale(650)
-    .translate([800/2, 800/2]);
-
-//告诉用户现在是什么模式
-svg.append("g")
-    .attr("id", "infor")
-    .attr("transform", "translate(400,50)")
-    .append("text")
-    .attr("id", "infortext")
-    .text("Population : Province and Municipalities (million)")
-    .style("text-anchor", "middle")
-    .attr("font-size", "30px")
-    .style("fill","red")
-;
-
+    .translate([400, 380]);
 
 //create 2D path
 var path = d3.geo.path().projection(projection);
 
+//-----------------define citytip--------------
+
+var body = d3.select("body").append("div").attr("id", "citytip2").attr("class","hidden");
+document.getElementById("citytip2").innerHTML = "<div id=\"Western\" >Western Cities:<br>"+
+                                                        "<button id="+"WulumuqiB"+" style=\"font-size:15px\">Wulumuqi</button>"+
+                                                        "<button id="+"XianB"+" style=\"font-size:15px\">Xian</button>"+
+                                                        "<button id="+"LasaB"+" style=\"font-size:15px\">Lasa</button><br>"+
+                                                        "<button id="+"ChengduB"+" style=\"font-size:15px\">Chengdu</button>"+
+                                                        "<button id="+"LijiangB"+" style=\"font-size:15px\">Lijiang</button>"+
+                                                        "<button id="+"XiningB"+" style=\"font-size:15px\">Xining</button>"+
+                                                "</div>"+
+
+                                                "<div id=\"Eastern\">Eastern Cities:<br>"+
+                                                        "<button id="+"HaerbinB"+" style=\"font-size:15px\">Haerbin</button>"+
+                                                        "<button id="+"ShenyangB"+" style=\"font-size:15px\">Shenyang</button>"+
+                                                        "<button id="+"BeijingB"+" style=\"font-size:15px\">Beijing</button>"+
+                                                        "<button id="+"TianjinB"+" style=\"font-size:15px\">Tianjin</button>"+
+                                                        "<button id="+"ShijiazhuangB"+" style=\"font-size:15px\">Shijiazhuang</button><br>"+
+                                                        "<button id="+"HefeiB"+" style=\"font-size:15px\">Hefei</button>"+
+                                                        "<button id="+"ShanghaiB"+" style=\"font-size:15px\">Shanghai</button>"+
+                                                        "<button id="+"HangzhouB"+" style=\"font-size:15px\">Hangzhou</button>"+
+                                                        "<button id="+"ChangshaB"+" style=\"font-size:15px\">Changsha</button>"+
+                                                        "<button id="+"HongkongB"+" style=\"font-size:15px\">HongKong</button><br>"+
+                                                "</div>"+
+                                                "<div>"+
+                                                "<button id="+"restB"+" style=\"font-size:15px\">RESET CITIES</button>"+
+                                                "</div>";
+
+var body = d3.select("body").append("div").attr("id", "citytip3").attr("class","hidden");
+document.getElementById("citytip3").innerHTML = "<p>Direct-controlled Municipalities:</p>"+
+                                                "<button id="+"ShanghaiA"+">Shanghai</button>"+
+                                                "<button id="+"BeijingA"+">Beijing</button>"+
+                                                "<button id="+"TianjinA"+">Tianjin</button><br>"+
+                                                "<button id="+"restA"+">RESET</button>";
+d3.select("#citytip3").classed("hidden", false);
 
 //-------------------------Define Tooltip---------------------------------------------------
 d3.select("body").append("div").attr("id", "tooltip").attr("class","hidden");
-d3.select("#tooltip").append("p").attr("id", "tooltip_name");
-d3.select("#tooltip").append("p").attr("id", "tooltip_GDP");
-d3.select("#tooltip").append("p").attr("id", "tooltip_population");
-d3.select("#tooltip").append("p").attr("id", "tooltip_PGDP");
-
 
 
 //set Province color domain
-var colorProvincePopulation = d3.scale.threshold()
-//    .domain([200,1760,3320,4880,6440,8000])//万人,间隔 1560
-    .domain([0,2500,5000,7500,10000,12500])//万人,2500
-    .range(["#ccff80","#b7ff4a","#9aff02","#8cea00","#73bf00","#548c00","#548c00"]);//绿色
+var colorPopulation = d3.scale.threshold()
+    .domain([0,2500,5000,7500,10000])//万人,2500
+    .range(["#ffeedd","#ffeedd","#ffd1a4","#ffaf60","#ff8000","#844200"]);
 
-var colorProvinceGDP = d3.scale.threshold()
-//    .domain([1000,13800,26600,39400,52200,65000])//亿元,间隔 12800
-    .domain([0,15000,30000,45000,60000,75000])//亿元,15000
-    .range(["#Caffff","#a6ffff","#4dffff","#00e3e3","#00aeae","#007979","#007979"]);//蓝色
-
-var colorProvincePGDP = d3.scale.threshold()
-//    .domain([25000,40833,56666,72499,88332,104165])//元,间隔 15833,上限120000
-    .domain([25000,40000,55000,70000,85000,100000])//元,间隔 15000
-    .range(["#ffd2d2","#ff5151", "#ff5151", "#ff2d2d", "#ff0000", "#b30000", "#b30000"]);//红色
-	
-//set City color domain
 var colorCityPopulation = d3.scale.threshold()
-//    .domain([50,340,630,920,1210,1500])//万人,间隔 290
-    .domain([0,2500,5000,7500,10000,12500])//万人,2500
-    .range(["#ccff80","#b7ff4a","#9aff02","#8cea00","#73bf00","#548c00","#548c00"]);//绿色
+    .domain([0,300,600,900,1200])//万人,300
+    .range(["#ffeedd","#ffeedd","#ffd1a4","#ffaf60","#ff8000","#844200"]);
+
+
+var colorGDP = d3.scale.threshold()
+    .domain([0,16000,32000,48000,64000])//亿元,间隔16000
+    .range(["#ecffff","#ecffff","#bbffff","#4dffff","#00aeae","#005757"]);
 
 var colorCityGDP = d3.scale.threshold()
-//    .domain([1000,3800,6600,9400,12200,15000])//亿元,间隔 2800
-    .domain([0,15000,30000,45000,60000,75000])//亿元,15000
-    .range(["#Caffff","#a6ffff","#4dffff","#00e3e3","#00aeae","#007979","#007979"]);//蓝色
+    .domain([0,2200,4400,6600,8800])//亿元,间隔2200
+    .range(["#ecffff","#ecffff","#bbffff","#4dffff","#00aeae","#005757"]);
 
-var colorCityPGDP = d3.scale.threshold()
-//    .domain([20000,36666,53332,69998,86664,103330])//元,间隔 16666,上限120000
-    .domain([25000,40000,55000,70000,85000,100000])//元,间隔 15000
-    .range(["#ffd2d2","#ff5151", "#ff5151", "#ff2d2d", "#ff0000", "#b30000", "#b30000"]);//红色
+
+var colorPGDP = d3.scale.threshold()
+    .domain([20000,40000,60000,80000,100000])//元,间隔 20000
+    .range(["#ffe6ff","#ffe6ff","#ffa6ff","#ff44ff","#d200d2","#750075"]);
+
+//-----create arrow---------------------------------------
 
 
 //-----------------定义尺度条的区域------------------------
 var rectArea = svg.append("g")
     .attr("class", "rectArea")
     .attr("id", "rectArea")
-    .attr("transform", "translate(100,120)");
+    .attr("transform", "translate("+(width*5/6)+","+height/6+")");
 	
 //----------------begin draw map-------------------------------------------
 d3.json("aChina.json",function(error, root) {
@@ -132,31 +127,46 @@ d3.json("aChina.json",function(error, root) {
     mapPath
         .attr("class",startShow)
         .attr("stroke","#000")
-//        .attr("stroke-width",1)
-        .attr("stroke-width", linkFunction)
+        .attr("stroke-width",1)
         .attr("d", path)
-        .attr("fill", mapShowScale)
+        .attr("fill", colorSituation)
         .style("opacity", 1)
-        .on("click",clickfunction)
+//        .on("click",clickfunction)
         .on("mouseover",mouseoverFunction)
         .on("mouseout",mouseoutFunction);
               
 
   
 //------button part-------------------------------------------------------------
-    d3.select("#buttonBar").select("#hasCity").on("click", hasCityFunction);
-    d3.select("#buttonBar").select("#noCity").on("click", noCityFunction);
-
-    d3.select("#buttonBar").select("#totalGDP_famousCities").on("click",clickGDPFamousCities);
-    d3.select("#buttonBar").select("#totalGDP_province").on("click", clickGDPProvince);
+    d3.select("#hasCity").on("click", hasCityFunction);
+    d3.select("#noCity").on("click", noCityFunction);
+    d3.select("#GDP_Button").on("click", GDPFillFunction);
+    d3.select("#Populaion_Button").on("click", PopulationFillFunction);
+    d3.select("#PGDP_Button").on("click", PGDPFillFunction);
     
-    d3.select("#buttonBar").select("#population_famousCities").on("click", clickPopulationFamousCities);
-    d3.select("#buttonBar").select("#population_province").on("click", clickPopulationProvince);
     
-    d3.select("#buttonBar").select("#PGDP_famousCities").on("click", clickPGDPFamousCities);
-    d3.select("#buttonBar").select("#PGDP_province").on("click", clickPGDPProvince);
+    d3.select("#HaerbinB").on("mousedown", cityLineFunction);
+    d3.select("#ShenyangB").on("mousedown", cityLineFunction);
+    d3.select("#BeijingB").on("mousedown", cityLineFunction);
+    d3.select("#TianjinB").on("mousedown", cityLineFunction);
+    d3.select("#ShijiazhuangB").on("mousedown", cityLineFunction);
+    d3.select("#HefeiB").on("mousedown", cityLineFunction);
+    d3.select("#ShanghaiB").on("mousedown", cityLineFunction);
+    d3.select("#HangzhouB").on("mousedown", cityLineFunction);
+    d3.select("#ChangshaB").on("mousedown", cityLineFunction);
+    d3.select("#LijiangB").on("mousedown", cityLineFunction);
+    d3.select("#XiningB").on("mousedown", cityLineFunction);
+    d3.select("#HongkongB").on("mousedown", cityLineFunction);
+    d3.select("#WulumuqiB").on("mousedown", cityLineFunction);
+    d3.select("#LasaB").on("mousedown", cityLineFunction);
+    d3.select("#XianB").on("mousedown", cityLineFunction);
+    d3.select("#ChengduB").on("mousedown", cityLineFunction);
+    d3.select("#restB").on("mousedown", restCityColor);
     
-
+    d3.select("#BeijingA").on("mousedown", cityLineFunction);
+    d3.select("#TianjinA").on("mousedown", cityLineFunction);
+    d3.select("#ShanghaiA").on("mousedown", cityLineFunction);
+    d3.select("#restA").on("mousedown", restCityColor);
     
 // -----------------------------keyboard--------------------  
     document.onkeydown=function(event){
@@ -200,190 +210,224 @@ d3.json("aChina.json",function(error, root) {
         }
     }
     
-    function linkFunction(d,i){
-        rectProvincePopulation();
-        if(i<34){
-            return 1;
-        }else{
-            return 2;   
-
+    //----------------change color function-----------------------
+    
+    //show cities or provinces
+    function colorSituation(d,i){ 
+        if(mod.IsProvince && mod.IsCity==false){
+            return provinceColor(d,i);
+        }else if(mod.IsProvince==false && mod.IsCity){
+            if(i<34 && d.properties.id != 82 && d.properties.id != 81 && d.properties.id != 31 &&
+                     d.properties.id != 31 && d.properties.id != 12 && d.properties.id != 11){
+                return "lightgray"
+            }else if(d.properties.id>500 || d.properties.id == 82 || d.properties.id == 81 || d.properties.id == 31 ||
+                     d.properties.id == 31 || d.properties.id == 12 || d.properties.id == 11){
+                return cityColor(d,i);   
+            }
         }
     }
     
-    function hasCityFunction(d,i){
-        d3.selectAll("path").attr("class",false);
+    //change provinces color
+    function provinceColor(d,i){
+        if(mod.IsPOP && mod.IsGDP==false && mod.IsPGDP==false){
+            rectPopulation();
+            return colorPopulation(d.properties.population2014);
+        }else if(mod.IsPOP==false && mod.IsGDP && mod.IsPGDP==false){
+            rectGDP();
+            return colorGDP(d.properties.gdp2014);
+        }else if(mod.IsPOP==false && mod.IsGDP==false && mod.IsPGDP){
+            rectPGDP();
+            return colorPGDP(d.properties.pgdp);
+        }
     }
     
-    function noCityFunction(d,i){
-        d3.selectAll("path").attr("class",function(d1,i1){
-            if(i1<34){
+    
+    //change cities color
+    function cityColor(d,i){
+         if(mod.IsPOP && mod.IsGDP==false && mod.IsPGDP==false){
+            rectPopulation();
+            return colorCityPopulation(d.properties.population2014);
+        }else if(mod.IsPOP==false && mod.IsGDP && mod.IsPGDP==false){
+            rectGDP();
+            return colorCityGDP(d.properties.gdp2014);
+        }else if(mod.IsPOP==false && mod.IsGDP==false && mod.IsPGDP){
+            rectPGDP();
+            return colorPGDP(d.properties.pgdp);
+        }
+    }
+    
+    
+//----------------------button fucntion ------------------    
+    
+    //Cities button
+    function hasCityFunction(){
+        mod.IsProvince = false;
+        mod.IsCity = true;
+        d3.select("#map").selectAll("path").attr("class",false)
+            .attr("fill",colorSituation);
+        
+        var totalWidth = document.body.clientWidth;
+        var halfWidth = totalWidth/2;
+        
+        d3.select("#citytip2")
+            .classed("hidden", false);
+        d3.select("#buttonTitle").classed("hidden", false);
+        
+        d3.select("#citytip3")
+            .classed("hidden", true);
+    }
+    
+    //Provinces button
+    function noCityFunction(){
+        mod.IsProvince = true;
+        mod.IsCity = false;
+        d3.selectAll("path").attr("class",function(d,i){
+            if(i<34){
                 return false;
             }else{
                 return "hidden";   
             }    
+        }).attr("fill",colorSituation);
+        
+        d3.select("#citytip2").classed("hidden", true);
+        d3.select("#buttonTitle").classed("hidden", true);
+        
+        d3.select("#citytip3")
+            .classed("hidden", false);
+    }
+    
+    //GDP button
+    function GDPFillFunction(){
+        mod.IsGDP = true;
+        mod.IsPOP = false;
+        mod.IsPGDP = false;
+        d3.selectAll("path").attr("fill",colorSituation);
+        rectGDP();
+    }
+    
+    //Population button
+    function PopulationFillFunction(){
+        mod.IsGDP = false;
+        mod.IsPOP = true;
+        mod.IsPGDP = false;
+        d3.selectAll("path").attr("fill",colorSituation);
+        rectPopulation();
+    }
+    
+    //GDP Per Capita button
+    function PGDPFillFunction(){
+        mod.IsGDP = false;
+        mod.IsPOP = false;
+        mod.IsPGDP = true;
+        d3.selectAll("path").attr("fill",colorSituation);
+        rectPGDP();
+    }
+    
+    function cityLineFunction(){
+        var name = d3.select(this).text();
+//        var x2, y2;
+        mod.IsRest = false;
+        mapPath.attr("fill", function(d,i){
+            var  colorArg = d.properties.population2014;
+            if( d.properties.ename == name || d.properties.name == name ){
+                return "yellow";
+            }else{
+                return "lightgrey";
+            }
         });
     }
-    
-    function clickGDPFamousCities(d, i){
-        hasCityFunction();
-        colorGDP();
-        rectCityGDP();
-        svg.select("#infortext").text("GDP: Ten Famouse Cities (billion)")
+
+    function restCityColor(){
+        mod.IsRest = true;
+        mapPath
+        .attr("fill", colorSituation);
     }
     
-    function clickGDPProvince(d, i){
-        noCityFunction();
-        colorGDP();
-        rectProvinceGDP();
-        svg.select("#infortext").text("GDP: Provinces and Municipalities (billion)")
-    }
-    
-    function clickPopulationFamousCities(d, i){
-        hasCityFunction();
-        colorPopulation();
-        rectCityPopulation();
-        svg.select("#infortext").text("Population: Ten Famouse Cities (million)")
-    }
-    
-    function clickPopulationProvince(d, i){
-        noCityFunction();
-        colorPopulation();
-        rectProvincePopulation();
-        svg.select("#infortext").text("Population: Provinces and Municipalities (million)")
-    }
-    
-    function clickPGDPFamousCities(d, i){
-        hasCityFunction();
-        colorPGDP();
-        rectCityPGDP();
-        svg.select("#infortext").text("GDP Per Capita: Ten Famouse Cities")
-    }
-    
-    function clickPGDPProvince(d, i){
-        noCityFunction();
-        colorPGDP();
-        rectProvincePGDP();
-        svg.select("#infortext").text("GDP Per Capita: Provinces and Municipalities")
-    }
     
     
     //------------------------- 鼠标接触 function -----------------------------------------
     
+    //mouse over function
     function mouseoverFunction(d,i){
-        d3.select(this).attr("fill","yellow");
+        
+        if(mod.IsProvince && mod.IsCity==false){
+            if(mod.IsRest){
+                d3.select(this).attr("fill","yellow");
+            }
+            d3.select("#tooltip").classed("hidden", false);
+        }else if(mod.IsProvince==false && mod.IsCity){
+            if(i<34 && d.properties.id != 82 && d.properties.id != 81 && d.properties.id != 31 &&
+                     d.properties.id != 31 && d.properties.id != 12 && d.properties.id != 11){
+                
+            }else if(d.properties.id>500 || d.properties.id == 82 || d.properties.id == 81 || d.properties.id == 31 ||
+                     d.properties.id == 31 || d.properties.id == 12 || d.properties.id == 11){
+                if(mod.IsRest){
+                    d3.select(this).attr("fill","yellow");
+                }
+                d3.select("#tooltip").classed("hidden", false);  
+            }
+        }
+        
+        
         
         // define the position of tooltip
         var yPosition = event.clientY;
         var xPosition = event.clientX;
-//        console.log(xPosition)
-        
         
         //Update the tooltip position and value
         d3.select("#tooltip")
             .style("left", xPosition + "px")
-            .style("top", yPosition + "px")
-            .select("#tooltip_name")
-            .text(function(){
-                if(i<34){
-                    return d.properties.name;
-                }else{
-                    return d.properties.ename;   
-                }
-            }).attr("align","center").style("font-size","15px");
+            .style("top", yPosition + "px");
         var x = Math.round(d.properties.gdp2014/10);
         var y = Math.sqrt((d.properties.gdp2014/10 - x)*(d.properties.gdp2014/10 - x));
         y = Math.round(y*100);
-        var gdp = x+"."+y;        
+        var gdp1 = x+"."+y;        
         var population = Math.round(d.properties.population2014/10)/10;
         
-        document.getElementById("tooltip_GDP").innerHTML = 
-            "GDP (billion ￥) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : &nbsp;&nbsp;"+gdp;
-        document.getElementById("tooltip_population").innerHTML = "Population ( million) : &nbsp;&nbsp;"+population;
-        document.getElementById("tooltip_PGDP").innerHTML = "GDP Per Capita (￥) : &nbsp;&nbsp;"+d.properties.pgdp;
-//        document.getElementById("tooltip_PGDP").innerHTML = 
-//            "<span>GDP Per Capita (￥) :<span> <em>"+d.properties.pgdp+"</em>";
-            
-        d3.select("#tooltip_population").style("font-size","12px");
-        d3.select("#tooltip_GDP").style("font-size","12px");
-        d3.select("#tooltip_PGDP").style("font-size","12px");
-        
-        //change the tooltip to be visible
-        d3.select("#tooltip").classed("hidden", false);
-                
+        var Name;
+        if(i<34){
+            Name = d.properties.name;
+        }else{
+            Name = d.properties.ename;   
         }
-    
-    function mouseoutFunction(d,i){
-         var inforcontext = svg.select("#infortext").text();
+        var gdp2 = Math.round(gdp1);
+        var pgdp = Math.round(d.properties.pgdp);
         
-        d3.select(this).attr("fill", function(d,i){
-                if( inforcontext == "Population : Province and Municipalities (million)" ){
-                    return colorProvincePopulation(d.properties.population2014);
-                }else if( inforcontext =="Population: Ten Famouse Cities (million)" ){
-                    return colorCityPopulation(d.properties.population2014);
-                }else if( inforcontext == "GDP: Ten Famouse Cities (billion)" ){
-                    return colorCityGDP(d.properties.gdp2014);
-                }else if( inforcontext =="GDP: Provinces and Municipalities (billion)" ){
-                    return colorProvinceGDP(d.properties.gdp2014);
-                }else if( inforcontext =="GDP Per Capita: Ten Famouse Cities"){
-                    return colorCityPGDP(d.properties.pgdp);
-                }else{
-                    return colorProvincePGDP(d.properties.pgdp);
-                }
-            
-        });
-        d3.select("#tooltip").classed("hidden", true);
+        document.getElementById("tooltip").innerHTML = "<center style=\"font-weight:bold\">"+Name+"</center> <br>"+ 
+            "Population<mao1>:</mao1> <em>"+population+" Million People</em><br>"+
+            "GDP<mao2>:</mao2> <em>"+gdp2+" Billion Yuan</em><br>"+
+            "GDP Per Capita<mao3>:</mao3> <em>"+pgdp+" Yuan</em><br>";
+        
+                
     }
     
-    function mapShowScale(d,i){
-        var scaleValue = projection.scale();
-        if(i<=33){
-            var popul = (d.properties.population2014);
-            return colorProvincePopulation(popul);
-                
-        }else{
-            var popul = (d.properties.population2014);    
-            return colorCityPopulation(popul);  
+    //mouse out function
+    function mouseoutFunction(d,i){
+        d3.select("#tooltip").classed("hidden", true);
+        if(mod.IsRest){
+            d3.selectAll("path").attr("fill", colorSituation);
         }
     }
 
     
-    //---------------------- 颜色填充 fucntion-----------------------
-    
-    function colorPopulation(d,i){
-        mapPath.attr("fill", function(d,i){
-            if(d.properties.id<1000){
-                return colorProvincePopulation(d.properties.population2014);
-            }else{
-                return colorCityPopulation(d.properties.population2014);
-            }
-        });
-    }
-    
-    function colorGDP(d,i){
-        mapPath.attr("fill", function(d,i){
-            if(d.properties.id<1000){
-                return colorProvinceGDP(d.properties.gdp2014);
-            }else{
-                return colorCityGDP(d.properties.gdp2014);
-            }
-        });
-    }
-    
-    function colorPGDP(d,i){
-        mapPath.attr("fill", function(d,i){
-            if(d.properties.id<1000){
-                return colorProvincePGDP(d.properties.pgdp);
-            }else{
-                return colorCityPGDP(d.properties.pgdp);
-            }
-        });
-    }
     
     //--------------------------改变刻度条-----------------------------
     
-     //这个是画城市人口
-    function rectCityPopulation(d,i){
+    rectPopulation();
+//    rectGDP();
+//    rectPGDP();
     
+    //这个是画人口刻度条
+    function rectPopulation(d,i){
+        originalRectangleProporty.ry=0;
+        originalRectangleProporty.ny=15;
+        
+        
+        var rectProporty  = originalRectangleProporty;
+        
+        var interval;
+        mod.IsCity ? (interval = rectProporty.population_city_interval) : (interval = rectProporty.population_interval);
+        
         rectArea
         .selectAll("rect")
         .remove()
@@ -394,127 +438,83 @@ d3.json("aChina.json",function(error, root) {
         .remove()
         ;
         
-        var x0 = -50;
-        
         //-----------方块-----------
-        rectArea.selectAll("rect")
-        .data(colorCityPopulation.domain().map(function(d, i) {
-            return {
-                z: d
-            };
-        }))
+        var rectAreaRange;
+        
+        if(mod.IsCity){
+            rectAreaRange = rectArea.selectAll("rect")
+                .data(colorCityPopulation.domain().map(function(d, i) {
+                    return {
+                        z: d
+                    };
+                }))
+        }else{
+            rectAreaRange = rectArea.selectAll("rect")
+                .data(colorPopulation.domain().map(function(d, i) {
+                    return {
+                        z: d
+                    };
+                }))
+        }
+        
+        rectAreaRange
         .enter().append("rect")
         .attr("id", "rectPopulation")
-        .attr("width", 20)
-        .attr("x",760)
+        .attr("width", rectProporty.width)
+//        .attr("x",760)
         .attr("y", function(d) {
-            x0+=50;
-            return x0;
+            rectProporty.ry+=rectProporty.ry_increase;
+            return rectProporty.ry;
         })
-        .attr("height",20)
-        .style("fill", function(d) { return colorCityPopulation(d.z-1); })
+        .attr("height",rectProporty.heigh)
+        .style("fill", function(d) {
+            if(mod.IsCity){
+                return colorCityPopulation(d.z+interval-1); 
+            }else{
+                return colorPopulation(d.z+interval-1);
+            }
+        })
         .style("stroke-width","1")
         .style("stroke","#000000")
         .on("mouseover",function(d,i){
             var minRange = d.z;
-             mapPath.attr("fill", function(d,i){
-                var  colorArg = d.properties.population2014;
-                 if( colorArg >= minRange && colorArg < (minRange+2500) ){
-                     return "yellow";
-                 }else{
-                     return colorCityPopulation(colorArg);
-                 }
+            var maxRange = d.z+interval;
+            (maxRange == 1500) ? (maxRange = 10000000000000) : (maxRange = d.z+interval);
+            mapPath.attr("fill", function(d,i){
+            var  colorArg = d.properties.population2014;
+                if( colorArg >= minRange && colorArg < maxRange ){
+                    
+                    if(mod.IsCity){
+                        if(d.properties.id>500 || d.properties.id == 82 || d.properties.id == 81 || d.properties.id == 31 ||
+                     d.properties.id == 31 || d.properties.id == 12 || d.properties.id == 11){
+                            return "yellow"; 
+                        }else{
+                            return "lightgrey";
+                        }
+                    }else{
+                        return "yellow";
+                    }
+                }else{
+//                    if(mod.IsCity){
+//                        if(d.properties.id>500 || d.properties.id == 82 || d.properties.id == 81 || d.properties.id == 31 ||
+//                     d.properties.id == 31 || d.properties.id == 12 || d.properties.id == 11){
+//                            return colorCityPopulation(colorArg);
+//                        }else{
+//                            return "lightgrey";
+//                        }
+//                    }else{
+//                        return colorPopulation(colorArg);
+//                    }
+                    return "lightgrey";
+                }
              });
         })
-        .on("mouseout",function(d,i){
-            mapPath.attr("fill", function(d,i){
-                colorArg = d.properties.population2014;
-                return colorCityPopulation(colorArg);
-            });
-        });
+        .on("mouseout",mouseoutFunction);
         
         //----------刻度-------------
-        var x1 = -10;
-        var pop = 0;
-        rectArea.selectAll("text")
-        .data(colorCityPopulation.domain().map(function(d, i) {
-            return {
-                z: d
-            };
-        }))
-        .enter().append("text")
-        .attr("class", "rectNum")
-        .attr("y", function(d) {
-            x1+=50;
-            return x1;
-        })
-        .attr("x", 760)
-        .style("text-anchor", "end")
-        .attr("font-size", "12px")
-        .text(function(d){
-            return pop/100+"-"+(pop+=2500)/100;
-        })
-        .style("fill","blue")
-        .style("text-anchor","start");
-    }
-    
-    //这个是省人口
-    function rectProvincePopulation(d,i){
-    
-        rectArea
-        .selectAll("rect")
-        .remove()
-        ;
-        
-        rectArea
-        .selectAll("text")
-        .remove()
-        ;
-        
-        var x0 = -50;
-        
-        //-----------方块-----------
-        rectArea.selectAll("rect")
-        .data(colorProvincePopulation.domain().map(function(d, i) {
-            return {
-                z: d
-            };
-        }))
-        .enter().append("rect")
-        .attr("id", "rectPopulation")
-        .attr("width", 20)
-        .attr("x",760)
-        .attr("y", function(d) {
-            x0+=50;
-            return x0;
-        })
-        .attr("height",20)
-        .style("fill", function(d) { return colorProvincePopulation(d.z-1); })
-        .style("stroke-width","1")
-        .style("stroke","#000000")
-        .on("mouseover",function(d,i){
-            var minRange = d.z;
-             mapPath.attr("fill", function(d,i){
-                var  colorArg = d.properties.population2014;
-                 if( colorArg >= minRange && colorArg < (minRange+2500) ){
-                     return "yellow";
-                 }else{
-                     return colorProvincePopulation(colorArg);
-                 }
-             });
-        })
-        .on("mouseout",function(d,i){
-            mapPath.attr("fill", function(d,i){
-                colorArg = d.properties.population2014;
-                return colorProvincePopulation(colorArg);
-            });
-        });
-        
-        //----------刻度-------------
-        var x1 = -10;
         var pop=0;
         rectArea.selectAll("text")
-        .data(colorProvincePopulation.domain().map(function(d, i) {
+        .data(colorPopulation.domain().map(function(d, i) {
             return {
                 z: d
             };
@@ -522,22 +522,39 @@ d3.json("aChina.json",function(error, root) {
         .enter().append("text")
         .attr("class", "rectNum")
         .attr("y", function(d) {
-            x1+=50;
-            return x1;
+            rectProporty.ny+=rectProporty.ny_increase;
+            return rectProporty.ny;
         })
-        .attr("x", 760)
+        .attr("x", rectProporty.nx)
         .style("text-anchor", "end")
-        .attr("font-size", "12px")
+        .attr("font-size", rectProporty.font_size)
         .text(function(d){
-            return pop/100+"-"+(pop+=2500)/100;
+            return (d.z == 10000) ? ("over "+pop/100) : ( pop/100+"-"+(pop+=interval)/100 );
         })
-        .style("fill","blue")
+        .style("fill","black")
         .style("text-anchor","start");
+        
+        rectArea.append("text")
+        .attr("id","unit")
+        .attr("y", rectProporty.ny+50)
+        .attr("x", rectProporty.nx-20)
+        .style("fill","black")
+        .style("text-anchor","start")
+        .style("font-size","20px")
+        .text("People (Million)");
     }
     
-    //这个是城市GDP
-    function rectCityGDP(d,i){
-    
+    //这个是画刻度条GDP
+    function rectGDP(d,i){
+        originalRectangleProporty.ry=0;
+        originalRectangleProporty.ny=15;
+        
+        
+        var rectProporty  = originalRectangleProporty;
+        
+        var interval;
+        mod.IsCity ? (interval = rectProporty.gdp_city_interval) : (interval = rectProporty.gdp_interval);
+        
         rectArea
         .selectAll("rect")
         .remove()
@@ -548,50 +565,83 @@ d3.json("aChina.json",function(error, root) {
         .remove()
         ;
         
-        var x0 = -50;
-        
         //-----------方块-----------
-        rectArea.selectAll("rect")
-        .data(colorCityGDP.domain().map(function(d, i) {
-            return {
-                z: d
-            };
-        }))
+        var rectAreaRange;
+        
+        if(mod.IsCity){
+            rectAreaRange = rectArea.selectAll("rect")
+                .data(colorCityGDP.domain().map(function(d, i) {
+                    return {
+                        z: d
+                    };
+                }))
+        }else{
+            rectAreaRange = rectArea.selectAll("rect")
+                .data(colorGDP.domain().map(function(d, i) {
+                    return {
+                        z: d
+                    };
+                }))
+        }
+        
+        rectAreaRange
         .enter().append("rect")
-        .attr("id", "rectPopulation")
-        .attr("width", 20)
-        .attr("x",760)
+        .attr("id", "rectGDP")
+        .attr("width", rectProporty.width)
+//        .attr("x",760)
         .attr("y", function(d) {
-            x0+=50;
-            return x0;
+            rectProporty.ry+=rectProporty.ry_increase;
+            return rectProporty.ry;
         })
-        .attr("height",20)
-        .style("fill", function(d) { return colorCityGDP(d.z-1); })
+        .attr("height",rectProporty.heigh)
+        .style("fill", function(d) { 
+            if(mod.IsCity){
+                return colorCityGDP(d.z+interval-1);
+            }else{
+                return colorGDP(d.z+interval-1);
+            }
+        })
         .style("stroke-width","1")
         .style("stroke","#000000")
         .on("mouseover",function(d,i){
             var minRange = d.z;
-             mapPath.attr("fill", function(d,i){
+            var maxRange = d.z+interval;
+            (maxRange == 11000) ? (maxRange = 10000000000000) : (maxRange = d.z+interval);
+            mapPath.attr("fill", function(d,i){
                 var  colorArg = d.properties.gdp2014;
-                 if( colorArg >= minRange && colorArg < (minRange+15000) ){
-                     return "yellow";
-                 }else{
-                     return colorCityGDP(colorArg);
-                 }
+                if( colorArg >= minRange && colorArg < maxRange ){
+                    console.log(maxRange)
+                    if(mod.IsCity){
+                        if(d.properties.id>500|| d.properties.id == 82 || d.properties.id == 81 || d.properties.id == 31 ||
+                     d.properties.id == 31 || d.properties.id == 12 || d.properties.id == 11){
+                            return "yellow"; 
+                        }else{
+                            return "lightgrey";
+                        }
+                    }else{
+                        return "yellow";
+                    }
+                }else{
+//                    if(mod.IsCity){
+//                        if(d.properties.id>500 || d.properties.id == 82 || d.properties.id == 81 || d.properties.id == 31 ||
+//                     d.properties.id == 31 || d.properties.id == 12 || d.properties.id == 11){
+//                            return colorCityGDP(colorArg);
+//                        }else{
+//                            return "lightgrey";
+//                        }
+//                    }else{
+//                        return colorGDP(colorArg);
+//                    }
+                    return "lightgrey";
+                }
              });
         })
-        .on("mouseout",function(d,i){
-            mapPath.attr("fill", function(d,i){
-                colorArg = d.properties.gdp2014;
-                return colorCityGDP(colorArg);
-            });
-        });
+        .on("mouseout",mouseoutFunction);
         
         //----------刻度-------------
-        var x1 = -10;
-        var gdp = 0;
+        var pop=0;
         rectArea.selectAll("text")
-        .data(colorCityGDP.domain().map(function(d, i) {
+        .data(colorGDP.domain().map(function(d, i) {
             return {
                 z: d
             };
@@ -599,22 +649,36 @@ d3.json("aChina.json",function(error, root) {
         .enter().append("text")
         .attr("class", "rectNum")
         .attr("y", function(d) {
-            x1+=50;
-            return x1;
+            rectProporty.ny+=rectProporty.ny_increase;
+            return rectProporty.ny;
         })
-        .attr("x", 760)
+        .attr("x", rectProporty.nx)
         .style("text-anchor", "end")
-        .attr("font-size", "12px")
+        .attr("font-size", rectProporty.font_size)
         .text(function(d){
-            return gdp/10+"-"+(gdp+=15000)/10;
+            return (d.z == 64000) ? ("over "+pop/10) : (pop/10+"-"+(pop+=interval)/10);
+//            return pop/10+"-"+(pop+=interval)/10;
         })
-        .style("fill","blue")
+        .style("fill","black")
         .style("text-anchor","start");
+        
+        rectArea.append("text")
+        .attr("id","unit")
+        .attr("y", rectProporty.ny+50)
+        .attr("x", rectProporty.nx-20)
+        .style("fill","black")
+        .style("text-anchor","start")
+        .style("font-size","20px")
+        .text("Yuan (Billion)");
     }
     
-    //这个是省GDP
-    function rectProvinceGDP(d,i){
-    
+    //刻度条人均GDP
+    function rectPGDP(d,i){
+        originalRectangleProporty.ry=0;
+        originalRectangleProporty.ny=15;
+        
+        var rectProporty  = originalRectangleProporty;
+        
         rectArea
         .selectAll("rect")
         .remove()
@@ -625,50 +689,51 @@ d3.json("aChina.json",function(error, root) {
         .remove()
         ;
         
-        var x0 = -50;
-        
         //-----------方块-----------
         rectArea.selectAll("rect")
-        .data(colorProvinceGDP.domain().map(function(d, i) {
+        .data(colorPGDP.domain().map(function(d, i) {
             return {
                 z: d
             };
         }))
         .enter().append("rect")
-        .attr("id", "rectPopulation")
-        .attr("width", 20)
-        .attr("x",760)
+        .attr("id", "rectPGDP")
+        .attr("width", rectProporty.width)
+//        .attr("x",760)
         .attr("y", function(d) {
-            x0+=50;
-            return x0;
+            rectProporty.ry+=rectProporty.ry_increase;
+            return rectProporty.ry;
         })
-        .attr("height",20)
-        .style("fill", function(d) { return colorProvinceGDP(d.z-1); })
+        .attr("height",rectProporty.heigh)
+        .style("fill", function(d) { return colorPGDP(d.z+rectProporty.pgdp_interval-1); })
         .style("stroke-width","1")
         .style("stroke","#000000")
-        .on("mouseover",function(d,i){
+        .on("mouseover", function(d,i){
             var minRange = d.z;
-             mapPath.attr("fill", function(d,i){
-                var  colorArg = d.properties.gdp2014;
-                 if( colorArg >= minRange && colorArg < (minRange+15000) ){
-                     return "yellow";
-                 }else{
-                     return colorProvinceGDP(colorArg);
-                 }
+            mapPath.attr("fill", function(d,i){
+            var  colorArg = d.properties.pgdp;
+                if( colorArg >= minRange && colorArg < (minRange+rectProporty.pgdp_interval) ){
+                    if(mod.IsCity){
+                        if(d.properties.id>500 || d.properties.id == 82 || d.properties.id == 81 || d.properties.id == 31 ||
+                     d.properties.id == 31 || d.properties.id == 12 || d.properties.id == 11){
+                            return "yellow"; 
+                        }else{
+                            return "lightgrey";
+                        }
+                    }else{
+                        return "yellow";
+                    }
+                }else{
+                    return "lightgrey";
+                }
              });
         })
-        .on("mouseout",function(d,i){
-            mapPath.attr("fill", function(d,i){
-                colorArg = d.properties.gdp2014;
-                return colorProvinceGDP(colorArg);
-            });
-        });
+        .on("mouseout",mouseoutFunction);
         
         //----------刻度-------------
-        var x1 = -10;
-        var gdp = 0;
+        var pop=20000;
         rectArea.selectAll("text")
-        .data(colorProvinceGDP.domain().map(function(d, i) {
+        .data(colorPGDP.domain().map(function(d, i) {
             return {
                 z: d
             };
@@ -676,187 +741,31 @@ d3.json("aChina.json",function(error, root) {
         .enter().append("text")
         .attr("class", "rectNum")
         .attr("y", function(d) {
-            x1+=50;
-            return x1;
+            rectProporty.ny+=rectProporty.ny_increase;
+            return rectProporty.ny;
         })
-        .attr("x", 760)
+        .attr("x", rectProporty.nx)
         .style("text-anchor", "end")
-        .attr("font-size", "12px")
+        .attr("font-size", rectProporty.font_size)
         .text(function(d){
-            return gdp/10+"-"+(gdp+=15000)/10;
+            return pop/1000+"k - "+(pop+=rectProporty.pgdp_interval)/1000+" k";
         })
-        .style("fill","blue")
+        .style("fill","black")
         .style("text-anchor","start");
-    }
-    
-    //省人均GDP
-    function rectProvincePGDP(d,i){
-    
-        rectArea
-        .selectAll("rect")
-        .remove()
-        ;
         
-        rectArea
-        .selectAll("text")
-        .remove()
-        ;
-        
-        var x0 = -50;
-        
-        //-----------方块-----------
-        rectArea.selectAll("rect")
-        .data(colorProvincePGDP.domain().map(function(d, i) {
-            return {
-                z: d
-            };
-        }))
-        .enter().append("rect")
-        .attr("id", "rectPopulation")
-        .attr("width", 20)
-        .attr("x",760)
-        .attr("y", function(d) {
-            x0+=50;
-            return x0;
-        })
-        .attr("height",20)
-        .style("fill", function(d) { return colorProvincePGDP(d.z-1); })
-        .style("stroke-width","1")
-        .style("stroke","#000000")
-        .on("mouseover",function(d,i){
-            var minRange = d.z;
-             mapPath.attr("fill", function(d,i){
-                var  colorArg = d.properties.pgdp;
-                 if( colorArg >= minRange && colorArg < (minRange+15000) ){
-                     return "yellow";
-                 }else{
-                     return colorProvincePGDP(colorArg);
-                 }
-             });
-        })
-        .on("mouseout",function(d,i){
-            mapPath.attr("fill", function(d,i){
-                colorArg = d.properties.pgdp;
-                return colorProvincePGDP(colorArg);
-            });
-        });
-        
-        //----------刻度-------------
-        var x1 = -10;
-        var gdp=25000;
-        rectArea.selectAll("text")
-        .data(colorProvincePGDP.domain().map(function(d, i) {
-            return {
-                z: d
-            };
-        }))
-        .enter().append("text")
-        .attr("class", "rectNum")
-        .attr("y", function(d) {
-            x1+=50;
-            return x1;
-        })
-        .attr("x", 760)
-        .style("text-anchor", "end")
-        .attr("font-size", "12px")
-        .text(function(d){
-            return gdp+"-"+(gdp+=15000);
-        })
-        .style("fill","blue")
-        .style("text-anchor","start");
-    }
-    
-    //市人均GDP
-    function rectCityPGDP(d,i){
-    
-        rectArea
-        .selectAll("rect")
-        .remove()
-        ;
-        
-        rectArea
-        .selectAll("text")
-        .remove()
-        ;
-        
-        var x0 = -50;
-        
-        //-----------方块-----------
-        rectArea.selectAll("rect")
-        .data(colorCityPGDP.domain().map(function(d, i) {
-            return {
-                z: d
-            };
-        }))
-        .enter().append("rect")
-        .attr("id", "rectPopulation")
-        .attr("width", 20)
-        .attr("x",760)
-        .attr("y", function(d) {
-            x0+=50;
-            return x0;
-        })
-        .attr("height",20)
-        .style("fill", function(d) { return colorCityPGDP(d.z-1); })
-        .style("stroke-width","1")
-        .style("stroke","#000000")
-        .on("mouseover",function(d,i){
-            var minRange = d.z;
-             mapPath.attr("fill", function(d,i){
-                var  colorArg = d.properties.pgdp;
-                 if( colorArg >= minRange && colorArg < (minRange+15000) ){
-                     return "yellow";
-                 }else{
-                     return colorCityPGDP(colorArg);
-                 }
-             });
-        })
-        .on("mouseout",function(d,i){
-            mapPath.attr("fill", function(d,i){
-                colorArg = d.properties.pgdp;
-                return colorCityPGDP(colorArg);
-            });
-        });
-        
-        //----------刻度-------------
-        var x1 = -10;
-        var gdp=0;
-        rectArea.selectAll("text")
-        .data(colorCityPGDP.domain().map(function(d, i) {
-            return {
-                z: d
-            };
-        }))
-        .enter().append("text")
-        .attr("class", "rectNum")
-        .attr("y", function(d) {
-            x1+=50;
-            return x1;
-        })
-        .attr("x", 760)
-        .style("text-anchor", "end")
-        .attr("font-size", "12px")
-        .text(function(d){
-            return gdp+"-"+(gdp+=15000);
-        })
-        .style("fill","blue")
-        .style("text-anchor","start");
-    }
-    
-    
+        rectArea.append("text")
+        .attr("id","unit")
+        .attr("y", rectProporty.ny+50)
+        .attr("x", rectProporty.nx-20)
+        .style("fill","black")
+        .style("text-anchor","start")
+        .style("font-size","20px")
+        .text("Yuan");
+    }    
    
 
     
 });
-
-
- 
-
-
-
-
-
-
 
 
 
