@@ -32,6 +32,7 @@ body {
     opacity:0.9;
 }
 		
+
 #tooltip.hidden {
     display: none;
 }
