@@ -1,5 +1,7 @@
 body {
-
+    text-align:center;
+	margin-left:auto;
+	margin-right:auto;
 }
 
 .axis path,
@@ -13,48 +15,41 @@ body {
   stroke: #000;
 }
 
-/* Add Tooltip Type here */
+/*------Tooltip------*/
 
 #tooltip {
     position: absolute;
-    width: 200px;
+    text-align: left;
+    width: 300px;
     height: auto;
     padding: 10px;
-    background-color: white;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-    -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-    -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    font: 14px sans-serif;
+    background: rgb(230,230,230);
+    color: black;
+    border:  5px;
+    border-radius: 8px;
     pointer-events: none;
     opacity:0.9;
 }
-			
+		
 #tooltip.hidden {
     display: none;
 }
 
-#tooltip p{
-    margin: 0;
-    font-family: sans-serif;
-/*    font-size: 16px;*/
-/*    line-height: 20px;*/
-/*    text-indent:35px;*/
+mao1{
+    padding:0px 0px 0px 79px;
+}
+mao2{
+    padding:0px 0px 0px 116px;
+}
+mao3{
+    padding:0px 0px 0px 45px;
 }
 
-
-#tooltip span{
-    text-align: left;
-    font-size: 12px;    
-    color:coral;
+em{
+    font-style: normal;
+    float: right;
 }
-
-#tooltip em{
-    text-align: right;
-    font-size: 12px;
-}
-
 /*--------province ----------*/
 
 #proName.hidden {
@@ -70,14 +65,6 @@ body {
 /*-------path---------*/
 #drawPath.hidden {
     display: none;
-}
-
-/*-------svg---------*/
-#middle{
-    width:80%;
-    text-align:center;
-    margin: 0 auto;
-/*    background-color:lightgray;*/
 }
 
 
@@ -103,161 +90,37 @@ body {
     padding-bottom: 2px;
 }
 
+#title h2{
+    font-size: 12px;
+    color:black;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
 /*-------buttonBar---------*/
 
 #buttonBar{
     text-align:center;
-    width:15%;
-    margin:100px 10px 0px 50px;
-/*    background-color: yellow;*/
-
+    width:30%;
+    height:auto;
+    margin:0 auto;
 }
 
-#totalGDP_div{
-    color: black;
-    font-size: 20px;
-    height: auto;
-    margin:10px 20px 0px 20px;
-    background-color:dodgerblue;
-    border-bottom-right-radius:1em;
-    border-bottom-left-radius:1em;
-    border-top-left-radius:1em;
-    border-top-right-radius:1em;
-}
-
-#totalGDP_famousCities{
-/*    width: 200px;*/
-    height: auto;
-    width: 80%;
-    cursor:pointer;
-    color: black;
-    margin:3px 0px 10px 0px;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    background-color:white;
-    font-size: 15px;
-}
-
-#totalGDP_province{
-    height: auto;
-    width: 80%;
-    cursor:pointer;
-    color: black;
+#cityOrProvince{
     margin:0px 0px 10px 0px;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    background-color:white;
-    font-size: 15px;
-}
-
-#population_div{
-    color: black;
-    font-size: 20px;
-    height: auto;
-    margin:10px 20px 0px 20px;
-    background-color:dodgerblue;
-    border-bottom-right-radius:1em;
-    border-bottom-left-radius:1em;
-    border-top-left-radius:1em;
-    border-top-right-radius:1em;
-}
-
-#population_famousCities{
-    height: auto;
-    width: 80%;
-    cursor:pointer;
-    color: black;
-    margin:3px 0px 10px 0px;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    background-color:white;
-    font-size: 15px;
-}
-
-#population_province{
-    height: auto;
-    width: 80%;
-    cursor:pointer;
-    color: black;
-    margin:0px 0px 10px 0px;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    background-color:white;
-    font-size: 15px;
-}
-
-#PGDP_div{
-    color: black;
-    font-size: 20px;
-    height: auto;
-    margin:10px 20px 0px 20px;
-    background-color:dodgerblue;
-    border-bottom-right-radius:1em;
-    border-bottom-left-radius:1em;
-    border-top-left-radius:1em;
-    border-top-right-radius:1em;
-}
-
-#PGDP_famousCities{
-    height: auto;
-    width: 80%;
-    cursor:pointer;
-    color: black;
-    margin:3px 0px 10px 0px;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    background-color:white;
-    font-size: 15px;
-}
-
-#PGDP_province{
-    height: auto;
-    width: 80%;
-    cursor:pointer;
-    color: black;
-    margin:0px 0px 10px 0px;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    background-color:white;
-    font-size: 15px;
 }
 
 
-#hasCity{
-    width: 80px;
-    height: auto;
-    cursor:pointer;
-    color: black;
-    margin:10px 5px 0px 0px;
-    font-size: 20px; 
-    padding-top: 2px;
-    padding-bottom: 2px;
-    background-color:orange;
-}
-
-#noCity{
-    width: 80px;
-    height: auto;
-    cursor:pointer;
-    color: black;
-    margin:10px 5px 0px 0px;
-    font-size: 20px; 
-    padding-top: 2px;
-    padding-bottom: 2px;
-    background-color:orange;
-}
 
 /*-------ending---------*/
 #ending{
-    height:300px;
+    height:400px;
     height:auto;
-    min-height:350px;
+    min-height:380px;
     margin:0 auto;
-    
     text-align:center;
 
     width:80%;
-    background-color:rgb(241,241,241);
+    background-color:rgb(241,241,241);  
     border-bottom-right-radius:2em;
     border-bottom-left-radius:2em;
     border-top-left-radius:2em;
@@ -278,6 +141,38 @@ body {
 #References{
     margin:0px 80px 0px 0px;
 }
+
+
+#last{
+    margin:auto;
+    width:80%;
+    padding-top: 2px;
+    font-family: sans-serif;
+    line-height: 20px;    
+}
+
+
+/*--------citytip2------------*/
+
+#Western {
+/*    width: 400px;*/
+    float: right;
+    margin:0px 250px 0px 0px;
+}
+#Eastern {
+/*    width: 600px;*/
+    float: left;
+    margin:0px 0px 0px 200px;
+}	
+
+#citytip2.hidden {
+    display: none;
+}
+
+#citytip3.hidden {
+    display: none;
+}
+
 
 
 
