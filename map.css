@@ -169,6 +169,10 @@ em{
     display: none;
 }
 
+#citytip3{
+ font-size: 20px;
+}
+
 #citytip3.hidden {
     display: none;
 }
