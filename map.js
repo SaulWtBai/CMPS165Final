@@ -44,17 +44,8 @@ var path = d3.geo.path().projection(projection);
 //-----------------define citytip--------------
 
 var body = d3.select("body").append("div").attr("id", "citytip2").attr("class","hidden");
-document.getElementById("citytip2").innerHTML = "<div id=\"Western\" >Western Cities:<br>"+
-                                                        "<button id="+"WulumuqiB"+" style=\"font-size:15px\">Wulumuqi</button>"+
-                                                        "<button id="+"XianB"+" style=\"font-size:15px\">Xian</button>"+
-                                                        "<button id="+"LasaB"+" style=\"font-size:15px\">Lasa</button><br>"+
-                                                        "<button id="+"ChengduB"+" style=\"font-size:15px\">Chengdu</button>"+
-                                                        "<button id="+"LijiangB"+" style=\"font-size:15px\">Lijiang</button>"+
-                                                        "<button id="+"XiningB"+" style=\"font-size:15px\">Xining</button>"+
-                                                "</div>"+
-
-                                                "<div id=\"Eastern\">Eastern Cities:<br>"+
-                                                        "<button id="+"HaerbinB"+" style=\"font-size:15px\">Haerbin</button>"+
+document.getElementById("citytip2").innerHTML = "<div id=\"Eastern\">Eastern Cities<br>"+
+                                                        "<button id="+"HaerbinB"+" style=\"font-size:15px\">Harbin</button>"+
                                                         "<button id="+"ShenyangB"+" style=\"font-size:15px\">Shenyang</button>"+
                                                         "<button id="+"BeijingB"+" style=\"font-size:15px\">Beijing</button>"+
                                                         "<button id="+"TianjinB"+" style=\"font-size:15px\">Tianjin</button>"+
@@ -65,17 +56,19 @@ document.getElementById("citytip2").innerHTML = "<div id=\"Western\" >Western Ci
                                                         "<button id="+"ChangshaB"+" style=\"font-size:15px\">Changsha</button>"+
                                                         "<button id="+"HongkongB"+" style=\"font-size:15px\">HongKong</button><br>"+
                                                 "</div>"+
+
+                                                "<div id=\"Western\" >Western Cities<br>"+
+                                                        "<button id="+"WulumuqiB"+" style=\"font-size:15px\">Wulumuqi</button>"+
+                                                        "<button id="+"XianB"+" style=\"font-size:15px\">Xian</button>"+
+                                                        "<button id="+"LasaB"+" style=\"font-size:15px\">Lasa</button><br>"+
+                                                        "<button id="+"ChengduB"+" style=\"font-size:15px\">Chengdu</button>"+
+                                                        "<button id="+"LijiangB"+" style=\"font-size:15px\">Lijiang</button>"+
+                                                        "<button id="+"XiningB"+" style=\"font-size:15px\">Xining</button>"+                     
+                                                "</div>"+
                                                 "<div>"+
                                                 "<button id="+"restB"+" style=\"font-size:15px\">RESET CITIES</button>"+
                                                 "</div>";
 
-var body = d3.select("body").append("div").attr("id", "citytip3").attr("class","hidden");
-document.getElementById("citytip3").innerHTML = "<p>Direct-controlled Municipalities:</p>"+
-                                                "<button id="+"ShanghaiA"+">Shanghai</button>"+
-                                                "<button id="+"BeijingA"+">Beijing</button>"+
-                                                "<button id="+"TianjinA"+">Tianjin</button><br>"+
-                                                "<button id="+"restA"+">RESET</button>";
-d3.select("#citytip3").classed("hidden", false);
 
 //-------------------------Define Tooltip---------------------------------------------------
 d3.select("body").append("div").attr("id", "tooltip").attr("class","hidden");
@@ -273,8 +266,6 @@ d3.json("aChina.json",function(error, root) {
             .classed("hidden", false);
         d3.select("#buttonTitle").classed("hidden", false);
         
-        d3.select("#citytip3")
-            .classed("hidden", true);
     }
     
     //Provinces button
@@ -292,8 +283,6 @@ d3.json("aChina.json",function(error, root) {
         d3.select("#citytip2").classed("hidden", true);
         d3.select("#buttonTitle").classed("hidden", true);
         
-        d3.select("#citytip3")
-            .classed("hidden", false);
     }
     
     //GDP button
@@ -768,4 +757,4 @@ d3.json("aChina.json",function(error, root) {
 });
 
 
-
+ 
