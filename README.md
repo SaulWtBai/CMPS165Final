@@ -2,5 +2,5 @@
 
 Data visualization of Chinese Population & GDP, 2014
 
-Contributor : 
+Contributors : 
   JiaHua You, Wentan Bai, Wentian Bai
